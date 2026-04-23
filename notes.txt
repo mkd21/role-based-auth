@@ -1,0 +1,56 @@
+
+
+while registering users we need 
+
+unique userName , email
+
+so we need to check before registering the user that if they are existing users.
+
+we need to use $or[] opeartor (OR operator) of mongodb
+
+why not findOne({ email : req.body.email , userName : req.body.userName });
+
+because cases can be 
+
+
+user 1
+
+userName : a ,
+email : a@amail.com
+
+user 2
+userName : b,
+email : b@bmail.com
+
+
+if query comes like 
+
+query : { userName : a , email : b@bmail.com }
+
+then it will check if userName with "c" and email with "b@bmail.com"  exists or not 
+
+
+it will check in user 1 --> condition not matched
+
+it will check in user 2 --> conditon not matched 
+
+
+then it will retunrn null and we will create a user with 
+
+userName : a,
+email : b@bmail.com 
+
+
+that't the issue here
+
+because this query will return true if both conditions are fulfilled in one user not like 
+
+if one conditon matched then return user exist. no it don't work like that 
+
+
+
+TO DEAL WITH THIS WE GONNA USE 
+
+$or : [] --> OR operator
+
+

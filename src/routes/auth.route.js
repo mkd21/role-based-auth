@@ -7,7 +7,7 @@ const {registerUser} = require("../controllers/auth.controller");
 
 // register api 
 
-router.route("/register" , registerUser);
+router.post("/register" , registerUser);
 
 
 module.exports = router;

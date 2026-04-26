@@ -27,7 +27,7 @@ if query comes like
 
 query : { userName : a , email : b@bmail.com }
 
-then it will check if userName with "c" and email with "b@bmail.com"  exists or not 
+then it will check if userName with "a" and email with "b@bmail.com"  exists or not  (basically it's treated as AND operator)
 
 
 it will check in user 1 --> condition not matched

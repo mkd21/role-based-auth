@@ -61,4 +61,53 @@ async function registerUser(req , res)
 }
 
 
-module.exports = {registerUser};
+async function login(req , res) {
+    
+    const {email , userName , password} = req.body;   // Either username or email will be provided
+
+    try {
+
+        if (!email && !userName) return res.status(400).json({ message: "Email or username required" });
+
+        if (email && userName) return res.status(400).json({ message: "Provide either email or username, not both" });
+
+
+        // check if email or username actually exist or not 
+
+        let existingUser;
+
+        if(email){
+            existingUser = await userModel.findOne({email});
+        }
+        else{
+            existingUser = await userModel.findOne({userName});
+        }
+
+        console.log(existingUser);
+
+        if(!existingUser) return res.status(400).json({ message: "Invalid credentials" });
+        
+        // check if password is correct or not 
+
+        const passwordCorrect = await bcrypt.compare(password , existingUser.password);
+
+        if(!passwordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+
+        const token = jwt.sign({ id : existingUser._id} , process.env.JWT_SECRET);
+
+        return res.cookie("token",token , 
+            {
+                httpOnly : true,
+                secure : process.env.NODE_ENV == "production",
+                sameSite : "strict"
+            })
+        .status(200)
+        .json({ userDetails : { userName : existingUser.userName , email : existingUser.email , role : existingUser.role } });
+
+    } catch (error) {
+        console.log("error occured",error.message);
+        return res.status(500).json({message : "internal server error"});
+    }
+}
+
+module.exports = {registerUser , login};

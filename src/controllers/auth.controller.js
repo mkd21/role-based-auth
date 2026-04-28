@@ -41,7 +41,7 @@ async function registerUser(req , res)
 
         const token = jwt.sign({
             id : newUser._id,
-            email : newUser.email
+            role : newUser.role
         } , process.env.JWT_SECRET);
         
 
@@ -93,7 +93,7 @@ async function login(req , res) {
 
         if(!passwordCorrect) return res.status(400).json({ message: "Invalid credentials" });
 
-        const token = jwt.sign({ id : existingUser._id} , process.env.JWT_SECRET);
+        const token = jwt.sign({ id : existingUser._id , role : existingUser.role } , process.env.JWT_SECRET);
 
         return res.cookie("token",token , 
             {

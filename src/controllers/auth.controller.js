@@ -60,7 +60,6 @@ async function registerUser(req , res)
     }
 }
 
-
 async function login(req , res) {
     
     const {email , userName , password} = req.body;   // Either username or email will be provided

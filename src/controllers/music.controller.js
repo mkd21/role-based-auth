@@ -1,7 +1,9 @@
 
 const musicModel = require("../models/music.model");
-
 const jwt = require("jsonwebtoken");
+
+const uploadMusic = require("../services/storage.service");
+
 
 async function createMusic(req , res){
 
@@ -16,6 +18,10 @@ async function createMusic(req , res){
     console.log(decodedToken);
 
     if(decodedToken.role != "artist") return res.status(403).json({message : "Don't have permission to perform this operation"});
+
+
+    const {title} = req.body;
+
 
   } catch (error) {
     console.log("error message is",error.message);

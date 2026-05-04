@@ -54,3 +54,20 @@ TO DEAL WITH THIS WE GONNA USE
 $or : [] --> OR operator
 
 
+MULTER USAGE 
+
+
+multer is used as a middleware to attach the files inside the req object 
+
+
+when we do multer.memoryStorage()
+
+--> files gets stored in RAM temporarily
+
+when we use multer.diskStorage()
+
+--> files gets stored in disk storage of server like aws , digital ocean etc when deployed
+
+right now in dev phase files will be stored in device's storage 
+
+

@@ -1,21 +1,36 @@
 
-const imageKit = require("@imagekit/nodejs");
+const { ImageKit } = require("@imagekit/nodejs");
+// const {Readable} = require("stream");
 
-const imageKitInstance = new imageKit({
+const fs = require("fs");
 
-    privateKey: "private_JqJ02HnrGSNmATTjFPaw5lIWA0g="
 
+const imageKitInstance = new ImageKit({
+    privateKey: process.env.IMAGE_KIT_KEY
 });
 
 async function uploadMusic(file) {
-    
-    const response = await imageKitInstance.files.upload({
-        file : file.buffer,
-        fileName : file.originalname,
-        folder : "/music"
-    });
+    try {
+        console.log("Uploading:", file.originalname);
 
-    return response;
+        // const stream = Readable.from(file.buffer);   
+
+        const stream = fs.createReadStream(file.path);
+        
+        const response = await imageKitInstance.files.upload({
+            file: stream,
+            fileName: file.filename,
+            folder: "/music"
+        });
+
+        console.log("ImageKit response:", response);
+
+        return response;
+
+    } catch (error) {
+        console.log("UPLOAD ERROR:", error);
+        throw error;
+    }
 }
 
 module.exports = uploadMusic;

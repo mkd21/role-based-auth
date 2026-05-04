@@ -82,7 +82,7 @@ async function login(req , res) {
             existingUser = await userModel.findOne({userName});
         }
 
-        console.log(existingUser);
+        // console.log(existingUser);
 
         if(!existingUser) return res.status(400).json({ message: "Invalid credentials" });
         

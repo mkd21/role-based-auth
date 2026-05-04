@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const uploadMusic = require("../services/storage.service");
 
+const fs = require("fs/promises");
 
 async function createMusic(req , res){
 
@@ -12,22 +13,52 @@ async function createMusic(req , res){
     // if token is not sent 
     if(!token) return res.status(401).json({message : "authentication token is required"});
 
+
   try {
     
     const decodedToken = jwt.verify(token , process.env.JWT_SECRET);
-    console.log(decodedToken);
+    // console.log(decodedToken);
 
+    // if user is not an artist 
     if(decodedToken.role != "artist") return res.status(403).json({message : "Don't have permission to perform this operation"});
 
 
+    // if music file is not present 
+    if(!req.file) return res.status(400).json({ message: "Music file is required" });
+
+    
     const {title} = req.body;
 
+    const uploadResponse = await uploadMusic(req.file);
 
-  } catch (error) {
+
+    // DELETE THE LOCAL FILE 
+
+    await fs.unlink(req.file.path);
+
+    console.log("File deleted:", req.file.path);
+
+    return res.status(201).json({
+            message: "Music uploaded successfully",
+            url: uploadResponse.url
+        });
+
+  } 
+  catch (error) {
+
     console.log("error message is",error.message);
+
+    // also clean file if upload fails
+    if (req.file?.path) 
+    {
+      try {
+        await fs.unlink(req.file.path);
+      } 
+      catch (_) {}
+    }
+
     return res.status(500).json({message : error.message});
   }
 }
-
 
 module.exports = createMusic;

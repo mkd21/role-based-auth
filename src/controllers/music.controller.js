@@ -31,13 +31,6 @@ async function createMusic(req , res){
 
     const uploadResponse = await uploadMusic(req.file);
 
-
-    // DELETE THE LOCAL FILE 
-
-    await fs.unlink(req.file.path);
-
-    console.log("File deleted:", req.file.path);
-
     return res.status(201).json({
             message: "Music uploaded successfully",
             url: uploadResponse.url
@@ -58,6 +51,17 @@ async function createMusic(req , res){
     }
 
     return res.status(500).json({message : error.message});
+  }
+  finally{
+    if(req.file?.path)
+    {
+      try {
+        await fs.unlink(req.file.path);
+        console.log("Local file deleted");
+      } catch (error) {
+        console.log("File deletion failed:", error.message);
+      }
+    }
   }
 }
 

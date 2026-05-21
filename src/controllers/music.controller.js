@@ -41,15 +41,6 @@ async function createMusic(req , res){
 
     console.log("error message is",error.message);
 
-    // also clean file if upload fails
-    if (req.file?.path) 
-    {
-      try {
-        await fs.unlink(req.file.path);
-      } 
-      catch (_) {}
-    }
-
     return res.status(500).json({message : error.message});
   }
   finally{

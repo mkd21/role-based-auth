@@ -3,6 +3,8 @@ const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+
+// REGISTER API 
 async function registerUser(req , res)
 {
     const {userName , email , password , role = "user"} = req.body;
@@ -60,6 +62,8 @@ async function registerUser(req , res)
     }
 }
 
+
+// LOGIN API 
 async function login(req , res) {
     
     const {email , userName , password} = req.body;   // Either username or email will be provided

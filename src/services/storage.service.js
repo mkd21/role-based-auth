@@ -16,11 +16,15 @@ async function uploadMusic(file) {
         // const stream = Readable.from(file.buffer);   
 
         const stream = fs.createReadStream(file.path);
-        
+
+        stream.on("error", (err) => {
+            console.log("STREAM ERROR:", err);
+        });
+
         const response = await imageKitInstance.files.upload({
             file: stream,
             fileName: file.filename,
-            folder: "/music"
+            folder: "/music",
         });
 
         console.log("ImageKit response:", response);

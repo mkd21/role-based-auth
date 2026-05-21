@@ -17,7 +17,7 @@ async function createMusic(req , res){
   try {
     
     const decodedToken = jwt.verify(token , process.env.JWT_SECRET);
-    // console.log(decodedToken);
+    // console.log("details inside token are",decodedToken);
 
     // if user is not an artist 
     if(decodedToken.role != "artist") return res.status(403).json({message : "Don't have permission to perform this operation"});
@@ -31,9 +31,18 @@ async function createMusic(req , res){
 
     const uploadResponse = await uploadMusic(req.file);
 
+    const music = await musicModel.create({
+      title,
+      url : uploadResponse.url,
+      artist : decodedToken.id
+    });
+
+
     return res.status(201).json({
+            id: music._id,
             message: "Music uploaded successfully",
-            url: uploadResponse.url
+            url: music.url,
+            title : music.title
         });
 
   } 
